@@ -16,15 +16,17 @@ df = pd.read_csv('raw-data/vol' + user + '.csv')
 # separate data by finger
 df = df.sort_values(['FINGER','Timestamp'])  # Sort values by finger first, then timestamp
 
-# convert string values to numerical values
-df = pd.get_dummies(df,columns=['BTN_TOUCH'],drop_first=True)
 
 # todo: handle missing data?
 # either remove rows, remove columns, or fill with data
 
 # todo: other data cleaning needed?
-# scaling, standardization, normalization?
+# normalization?
 # scaling below feature extraction
+
+# standardization
+# convert string values to numerical values
+df = pd.get_dummies(df,columns=['BTN_TOUCH'],drop_first=True)
 
 
 
@@ -62,6 +64,10 @@ df.dropna(inplace=True)
 scaler = StandardScaler()
 scaler.fit(df)
 df = pd.DataFrame(scaler.transform(df),columns=df.keys())
+
+# # normalization
+# for column in df.columns:
+#     df[column] = df[column] / df[column].abs().max()
 
 # SAVE TO CSV
 df['User'] = user
