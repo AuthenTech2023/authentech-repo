@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import sklearn as sk
+from sklearn.preprocessing import StandardScaler
 
 
 # IMPORT RAW DATA
@@ -23,6 +24,8 @@ df = pd.get_dummies(df,columns=['BTN_TOUCH'],drop_first=True)
 
 # todo: other data cleaning needed?
 # scaling, standardization, normalization?
+# scaling below feature extraction
+
 
 
 # SEPARATE INTO GESTURES
@@ -55,6 +58,10 @@ df['Ang_V'] = (df.Path_Tangent - df.Path_Tangent.shift(1)) / (df.Timestamp - df.
 # Drop missing or NaN values
 df.dropna(inplace=True)
 
+# scaling
+scaler = StandardScaler()
+scaler.fit(df)
+df = pd.DataFrame(scaler.transform(df),columns=df.keys())
 
 # SAVE TO CSV
 df['User'] = user
