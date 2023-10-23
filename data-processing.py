@@ -20,19 +20,15 @@ df = df.sort_values(['FINGER','Timestamp'])  # Sort values by finger first, then
 # todo: handle missing data?
 # either remove rows, remove columns, or fill with data
 
-# todo: other data cleaning needed?
-# normalization?
-# scaling below feature extraction
-
 # standardization
 # convert string values to numerical values
 df = pd.get_dummies(df,columns=['BTN_TOUCH'],drop_first=True)
 
 
-
 # SEPARATE INTO GESTURES
 # todo: Separate into gestures
 # either by number of data points (suggested) or time period
+
 
 
 # FEATURE EXTRACTION
