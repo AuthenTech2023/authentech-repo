@@ -82,6 +82,8 @@ def extract_features(gesture):
     # is it possible to test all combinations of features and graph our results? or would that take too long
     # should raw data be considered in features?
 
+    # ** MANUALLY SELECT FEATURE SETS TO TEST
+
     # I am still unsure if this is how we should be calculating features
     gesture['X_Speed'] = (gesture.X - gesture.X.shift(1)) / (gesture.Timestamp - gesture.Timestamp.shift(1))
     gesture['Y_Speed'] = (gesture.Y - gesture.Y.shift(1)) / (gesture.Timestamp - gesture.Timestamp.shift(1))
@@ -108,6 +110,7 @@ for row in df:
     if i >= GESTURE_SIZE:  # todo: include lifting finger as condition? and switching fingers
         features.loc[len(features.index)] = extract_features(current_gesture) # append extracted features to features
         current_gesture = pd.DataFrame(columns=current_gesture.columns)  # clear data but keep columns
+        i = 0
         continue
     current_gesture.loc[len(current_gesture.index)] = row  # append row to current_gesture
     i += 1
@@ -115,6 +118,7 @@ for row in df:
 
 # Drop missing or NaN values
 features = features.dropna(inplace=True)
+
 # scaling
 scaler = StandardScaler()
 scaler.fit(features)
