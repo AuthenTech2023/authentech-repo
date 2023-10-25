@@ -6,20 +6,22 @@ import sklearn as sk
 from sklearn.preprocessing import StandardScaler
 
 
+# CONSTANTS
 GESTURE_SIZE = 10
+
 
 # IMPORT RAW DATA
 print('Welcome to the data processing script!')
 user = input('Input User to process (1-15): ')
-df = pd.read_csv('raw-data/vol' + user + '.csv')
+raw_data = pd.read_csv('raw-data/vol' + user + '.csv')
 
 
 # DATA CLEANING
 # separate data by finger
-df = df.sort_values(['FINGER','Timestamp'])  # Sort values by finger first, then timestamp
+raw_data.sort_values(['FINGER','Timestamp'],inplace=True)  # Sort values by finger first, then timestamp
 
-# todo: handle missing data?
-    # either remove rows, remove columns, or fill with data
+# Drop missing or NaN values (again)
+raw_data.dropna(inplace=True)
 
 # todo: handle duplicate data?
     # duplicate data increases the chance of overfitting
@@ -27,13 +29,11 @@ df = df.sort_values(['FINGER','Timestamp'])  # Sort values by finger first, then
 
 # standardization
 # convert string values to numerical values
-df = pd.get_dummies(df,columns=['BTN_TOUCH'],drop_first=True) # drop first to prevent perfect predictor (overfitting)
+raw_data = pd.get_dummies(raw_data,columns=['BTN_TOUCH'],drop_first=True)  # drop first to prevent perfect predictor (overfitting)
 
 
 # SEPARATE INTO GESTURES
 # todo: Separate into gestures
-# either by number of data points (suggested) or time period
-
 # we break all the raw data into gestures and extract features of the gesture for added data
 # we predict gesture by gesture whether it belongs to user 1 or 2
 
@@ -51,7 +51,11 @@ df = pd.get_dummies(df,columns=['BTN_TOUCH'],drop_first=True) # drop first to pr
 # our goal is to output a csv file containing a row of features for each gesture
 features = pd.DataFrame()
 
+
 def extract_features(gesture):
+    if type(gesture) != pd.DataFrame():
+        print("Error: Not DF")
+    print(type(gesture))
     gesture.insert(len(gesture.columns), "X_Speed", 0)
     gesture.insert(len(gesture.columns), "X_Acceleration", 0)
     gesture.insert(len(gesture.columns), "Y_Speed", 0)
@@ -103,10 +107,10 @@ def extract_features(gesture):
     return gesture
 
 
-current_gesture = pd.DataFrame(columns=df.columns)
+current_gesture = pd.DataFrame(columns=raw_data.columns)
 i = 0  # count variable for rows in gesture
 
-for row in df:
+for row in raw_data:
     if i >= GESTURE_SIZE:  # todo: include lifting finger as condition? and switching fingers
         features.loc[len(features.index)] = extract_features(current_gesture) # append extracted features to features
         current_gesture = pd.DataFrame(columns=current_gesture.columns)  # clear data but keep columns
@@ -116,7 +120,7 @@ for row in df:
     i += 1
 
 
-# Drop missing or NaN values
+# Drop missing or NaN values (again)
 features = features.dropna(inplace=True)
 
 # scaling
