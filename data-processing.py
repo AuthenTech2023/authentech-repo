@@ -6,10 +6,6 @@ import sklearn as sk
 from sklearn.preprocessing import StandardScaler
 
 
-# CONSTANTS
-GESTURE_SIZE = 10
-
-
 # IMPORT RAW DATA
 print('Welcome to the data processing script!')
 user = input('Input User to process (1-15): ')
@@ -18,10 +14,10 @@ raw_data = pd.read_csv('raw-data/vol' + user + '.csv')
 
 # DATA CLEANING
 # separate data by finger
-raw_data.sort_values(['FINGER','Timestamp'],inplace=True)  # Sort values by finger first, then timestamp
+raw_data.sort_values(['FINGER','Timestamp'],inplace=True,ignore_index=True)  # Sort values by finger first, then timestamp
 
 # Drop missing or NaN values (again)
-raw_data.dropna(inplace=True)
+raw_data.dropna(inplace=True,ignore_index=True)
 
 # todo: handle duplicate data?
     # duplicate data increases the chance of overfitting
@@ -49,13 +45,8 @@ raw_data = pd.get_dummies(raw_data,columns=['BTN_TOUCH'],drop_first=True)  # dro
 
 # FEATURE EXTRACTION
 # our goal is to output a csv file containing a row of features for each gesture
-features = pd.DataFrame()
-
 
 def extract_features(gesture):
-    if type(gesture) != pd.DataFrame():
-        print("Error: Not DF")
-    print(type(gesture))
     gesture.insert(len(gesture.columns), "X_Speed", 0)
     gesture.insert(len(gesture.columns), "X_Acceleration", 0)
     gesture.insert(len(gesture.columns), "Y_Speed", 0)
@@ -63,8 +54,22 @@ def extract_features(gesture):
     gesture.insert(len(gesture.columns), "Speed", 0)
     gesture.insert(len(gesture.columns), "Acceleration", 0)
     gesture.insert(len(gesture.columns), "Jerk", 0)
-    gesture.insert(len(gesture.columns), "Ang_V", 0)
-    gesture.insert(len(gesture.columns), "Path_Tangent", 0)
+
+    gesture['X_Speed'] = (gesture.X - gesture.X.shift(len(gesture) - 1)) / (
+                gesture.Timestamp - gesture.Timestamp.shift(len(gesture) - 1))
+    gesture['Y_Speed'] = (gesture.Y - gesture.Y.shift(len(gesture) - 1)) / (
+                gesture.Timestamp - gesture.Timestamp.shift(len(gesture) - 1))
+    gesture['Speed'] = ((gesture.X_Speed ** 2) + (gesture.Y_Speed ** 2)) ** 0.5
+    gesture['X_Acceleration'] = (gesture.X_Speed - gesture.X_Speed.shift(len(gesture) - 1)) / (
+            gesture.Timestamp - gesture.Timestamp.shift(len(gesture) - 1))
+    gesture['Y_Acceleration'] = (gesture.Y_Speed - gesture.Y_Speed.shift(len(gesture) - 1)) / (
+            gesture.Timestamp - gesture.Timestamp.shift(len(gesture) - 1))
+    gesture['Acceleration'] = (gesture.Speed - gesture.Speed.shift(len(gesture) - 1)) / (
+            gesture.Timestamp - gesture.Timestamp.shift(len(gesture) - 1))
+    gesture['Jerk'] = (gesture.Acceleration - gesture.Acceleration.shift(len(gesture) - 1)) / (
+            gesture.Timestamp - gesture.Timestamp.shift(len(gesture) - 1))
+
+    return gesture
     # possible additional features:
     # todo: does additional features increase/decrease over/underfitting?
     # size/range of gesture: the area of screen touched
@@ -89,35 +94,35 @@ def extract_features(gesture):
     # ** MANUALLY SELECT FEATURE SETS TO TEST
 
     # I am still unsure if this is how we should be calculating features
-    gesture['X_Speed'] = (gesture.X - gesture.X.shift(1)) / (gesture.Timestamp - gesture.Timestamp.shift(1))
-    gesture['Y_Speed'] = (gesture.Y - gesture.Y.shift(1)) / (gesture.Timestamp - gesture.Timestamp.shift(1))
-    gesture['Speed'] = np.sqrt((gesture.X_Speed ** 2) + (gesture.Y_Speed ** 2))
-    gesture['X_Acceleration'] = (gesture.X_Speed - gesture.X_Speed.shift(1)) / (
-                gesture.Timestamp - gesture.Timestamp.shift(1))
-    gesture['Y_Acceleration'] = (gesture.Y_Speed - gesture.Y_Speed.shift(1)) / (
-                gesture.Timestamp - gesture.Timestamp.shift(1))
-    gesture['Acceleration'] = (gesture.Speed - gesture.Speed.shift(1)) / (
-                gesture.Timestamp - gesture.Timestamp.shift(1))
-    gesture['Jerk'] = (gesture.Acceleration - gesture.Acceleration.shift(1)) / (
-                gesture.Timestamp - gesture.Timestamp.shift(1))
-    gesture['Path_Tangent'] = np.arctan2((gesture.Y - gesture.Y.shift(1)), (gesture.X - gesture.X.shift(1)))
-    gesture['Ang_V'] = (gesture.Path_Tangent - gesture.Path_Tangent.shift(1)) / (
-                gesture.Timestamp - gesture.Timestamp.shift(1))
 
-    return gesture
 
 
 current_gesture = pd.DataFrame(columns=raw_data.columns)
-i = 0  # count variable for rows in gesture
 
-for row in raw_data:
-    if i >= GESTURE_SIZE:  # todo: include lifting finger as condition? and switching fingers
-        features.loc[len(features.index)] = extract_features(current_gesture) # append extracted features to features
-        current_gesture = pd.DataFrame(columns=current_gesture.columns)  # clear data but keep columns
-        i = 0
-        continue
-    current_gesture.loc[len(current_gesture.index)] = row  # append row to current_gesture
-    i += 1
+GESTURE_LENGTH = 10
+index = 0
+DATA_LENGTH = len(raw_data)
+print(DATA_LENGTH)
+
+features = pd.DataFrame(columns=raw_data.columns)
+features.insert(len(features.columns), "X_Speed", 0)
+features.insert(len(features.columns), "X_Acceleration", 0)
+features.insert(len(features.columns), "Y_Speed", 0)
+features.insert(len(features.columns), "Y_Acceleration", 0)
+features.insert(len(features.columns), "Speed", 0)
+features.insert(len(features.columns), "Acceleration", 0)
+features.insert(len(features.columns), "Jerk", 0)
+features.head()
+
+while index + 10 < DATA_LENGTH:
+    index += 10
+    if index % 1000 == 0:
+        print(index)
+
+    current_gesture = raw_data[raw_data.index < index]  # put first 10 rows in current_gesture
+    raw_data.drop(raw_data.index[:10], inplace=True)  # drop first 10 rows
+
+    print(extract_features(current_gesture))
 
 
 # Drop missing or NaN values (again)
