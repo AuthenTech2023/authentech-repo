@@ -6,11 +6,6 @@ import sklearn as sk
 from sklearn.preprocessing import StandardScaler
 
 
-# IMPORT RAW DATA
-print('Welcome to the data processing script!')
-user = input('Input User to process (1-15): ')
-raw_data = pd.read_csv('raw-data/vol' + user + '.csv')
-
 
 # DATA CLEANING
 # separate data by finger
@@ -140,3 +135,40 @@ features = pd.DataFrame(scaler.transform(features),columns=features.keys())
 # SAVE TO CSV
 features['User'] = user
 features.to_csv('processed-feature-data/user' + user + '.csv')
+
+
+
+
+
+
+
+
+
+def feature_gen(data):
+    print('yay')
+
+
+def import_data(user):
+    raw_data = pd.read_csv('raw-data/vol' + user + '.csv')
+    return raw_data
+
+def process_user(user):
+    df = import_data(user)
+    feature_df = feature_gen(df)
+    print('User ' + str(user) + ' processed')
+
+
+if __name__ == '__main__':
+    # multiprocessing courtesy of mauth-research-project
+    # import multiprocessing
+    #
+    # num_processes = 16
+    # pool = multiprocessing.Pool(processes=num_processes)
+    # users_to_process = [1,2]
+    # pool.map(process_user, users_to_process)  # process_subject function is called for all of subjects_to_process
+    # pool.close()
+    # pool.join()
+    #
+    # utilities.create_feature_file()  # what does this do??
+    process_user(1)
+    process_user(2)
