@@ -47,15 +47,17 @@ def traintestsplit(user_data):
         y_testing_data.append(y_test)
 
     # Output data to csv files
-    X_training_data.to_csv('processed-feature-data/training-data/X_training_data.csv')
+    X_training_data.drop(['User'], axis=1, inplace=True)  # drop 'User' data
+    X_training_data.to_csv('processed-feature-data/training-data/X_training_data.csv', index=False)
     print('X_training_data to csv')
-    y_training_data.to_csv('processed-feature-data/training-data/y_training_data.csv')
+    y_training_data.to_csv('processed-feature-data/training-data/y_training_data.csv', index=False)
     print('y_training_data to csv')
 
     for userid in range(1, len(user_data)+1):
-        X_testing_data[userid-1].to_csv('processed-feature-data/testing-data/X_testing_data_user' + str(userid) + '.csv')
+        X_testing_data[userid-1].drop(['User'], axis=1, inplace=True)  # drop User column
+        X_testing_data[userid-1].to_csv('processed-feature-data/testing-data/X_testing_data_user' + str(userid) + '.csv', index=False)
         print('X_testing_data User: ' + str(userid) + ' to csv')
-        y_testing_data[userid-1].to_csv('processed-feature-data/testing-data/y_testing_data_user' + str(userid) + '.csv')
+        y_testing_data[userid-1].to_csv('processed-feature-data/testing-data/y_testing_data_user' + str(userid) + '.csv', index=False)
         print('y_testing_data User: ' + str(userid) + ' to csv')
 
 
