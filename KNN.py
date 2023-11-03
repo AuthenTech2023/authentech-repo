@@ -17,7 +17,7 @@ def knn_model(auth_user, k=4):
 
     # FIT THE MODEL
     knn = KNeighborsClassifier(n_neighbors=k)  # n_neighbors should be adjusted to best value
-    knn.fit(X_train, y_train.values.ravel())
+    knn.fit(X_train.values, y_train.values.ravel())
 
     # TEST MODEL
     pred = knn.predict(X_test.values)
