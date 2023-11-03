@@ -10,8 +10,11 @@ import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
+
+'''
+
 # Found that between max depth of 6 and 7 is where we lose the 100% accuracy
-dtree = DecisionTreeClassifier(max_depth=7)
+dtree = DecisionTreeClassifier(max_depth=6)
 
 dfXtrain = pd.read_csv('processed-feature-data/training-data/X_training_data.csv')
 
@@ -43,7 +46,7 @@ print(classification_report(dfYtest, predictions))
 
 # Getting all false negatives for results?? Not sure why that is
 
-'''
+
 # Moving on to random forest
 
 from sklearn.ensemble import RandomForestClassifier
@@ -70,7 +73,26 @@ Defining results:
 
 '''
 
-#def DecisionTree(auth_user, max_depth):
+def decision_tree_model(auth_user, max_depth=7):
 
-# todo: get rid of all the subset nonsense
-# todo: make more object oriented
+    X_train = pd.read_csv('processed-feature-data/training-data/X_training_data.csv')
+    X_test = pd.read_csv('processed-feature-data/testing-data/X_testing_data_user' + str(auth_user) + '.csv')
+    y_train = pd.read_csv('processed-feature-data/training-data/y_training_data.csv')
+    y_test = pd.read_csv('processed-feature-data/testing-data/y_testing_data_user' + str(auth_user) + '.csv')
+
+    dtree = DecisionTreeClassifier(max_depth=max_depth)
+    dtree.fit(X_train, y_train)
+
+    pred = dtree.predict(X_test.values)
+
+    print(confusion_matrix(y_test, pred))
+    print(classification_report(y_test, pred))
+
+    return pred, y_test
+
+
+if __name__ == '__main__':
+    authentic_user = 8
+    # Max depth of 7 makes sense for the results
+    max_depth = 7
+    decision_tree_model(authentic_user, max_depth)
