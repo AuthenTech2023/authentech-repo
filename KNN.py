@@ -6,26 +6,21 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 
 
-def knn_model(au, uau, k=4):
-    User0 = pd.read_csv('processed-feature-data/user' + au +'.csv')
-    User1 = pd.read_csv('processed-feature-data/user' + uau +'.csv')
-    final_feature_set = pd.concat([User0, User1], ignore_index=True)
+def knn_model(auth_user, k=4):
 
-
-    # TRAIN TEST SPLIT
-    X = final_feature_set
-    y = final_feature_set['User']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
+    # IMPORT TRAIN AND TEST DATA
+    X_train = pd.read_csv('processed-feature-data/training-data/X_training_data.csv')
+    X_test = pd.read_csv('processed-feature-data/testing-data/X_testing_data_user' + str(auth_user) + '.csv')
+    y_train = pd.read_csv('processed-feature-data/training-data/y_training_data.csv')
+    y_test = pd.read_csv('processed-feature-data/testing-data/y_testing_data_user' + str(auth_user) + '.csv')
 
 
     # FIT THE MODEL
     knn = KNeighborsClassifier(n_neighbors=k)  # n_neighbors should be adjusted to best value
-    knn.fit(X_train, y_train)
-
+    knn.fit(X_train.values, y_train.values.ravel())
 
     # TEST MODEL
-    pred = knn.predict(X_test)
-
+    pred = knn.predict(X_test.values)
 
     # EVALUATE METRICS
     print(confusion_matrix(y_test, pred))
@@ -36,8 +31,7 @@ def knn_model(au, uau, k=4):
 
 
 if __name__ == '__main__':
-    # IMPORT FEATURE DATA
-    print('Welcome to the KNN Model Script!')
-    auth_user = input('Enter the Authorized User ID (1-15): ')
-    unauth_user = input('Enter the Unauthorized User ID (1-15): ')
-    knn_model(auth_user, unauth_user)
+    k = 4
+    for i in range(1,16):
+        print("User " + str(i) + " results:")
+        knn_model(i, k)
