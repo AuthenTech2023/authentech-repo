@@ -10,48 +10,67 @@ import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-dtree = DecisionTreeClassifier()
+# Found that between max depth of 6 and 7 is where we lose the 100% accuracy
+dtree = DecisionTreeClassifier(max_depth=7)
 
 dfXtrain = pd.read_csv('processed-feature-data/training-data/X_training_data.csv')
 
-print('X_train data loaded.')
-
-# Create a smaller subset just to run the data
-half = int(len(dfXtrain.index)//100)
-dfXtrain_subset = dfXtrain.iloc[0:half]
+print('X train data loaded.')
 
 dfYtrain = pd.read_csv('processed-feature-data/training-data/y_training_data.csv')
 print('Y_train data loaded.')
 
-# Create a smaller subset just to run the data
-half = int(len(dfYtrain.index)//100)
-dfYtrain_subset = dfYtrain.iloc[0:half]
-
-print("Y train subset loaded")
-
-dtree.fit(dfXtrain_subset, dfYtrain_subset)
+dtree.fit(dfXtrain, dfYtrain)
+print(dtree.max_depth)
 
 print('Model fitted.')
 
-# Only trying with user 8 for now
-dfXtest = pd.read_csv('processed-feature-data/testing-data/X_testing_data_user8.csv')
+# Only trying with user 11 for now
+dfXtest = pd.read_csv('processed-feature-data/testing-data/X_testing_data_user5.csv')
 
-# Create more subsets
-half_testing = int(len(dfXtest.index)//100)
-dfXtest_subset = dfXtest.iloc[0:half_testing]
-
-
-predictions = dtree.predict(dfXtest_subset)
-print("Predictions done.")
+predictions = dtree.predict(dfXtest)
+print("Number of predictions: " + str(len(predictions)))
 
 print("...")
-dfYtest = pd.read_csv('processed-feature-data/testing-data/y_testing_data_user8.csv')
+dfYtest = pd.read_csv('processed-feature-data/testing-data/y_testing_data_user5.csv')
 print("Y test values loaded.")
 
-half_Y_test = int(len(dfYtest.index)//100)
-dfYtest_subset = dfXtest.iloc[0:half_testing]
-print("Y test subset loaded")
 
-print(confusion_matrix(dfYtest_subset,predictions))
+
+print(confusion_matrix(dfYtest,predictions))
 print('\n')
-#print(classification_report(dfYtest_subset, predictions))
+print(classification_report(dfYtest, predictions))
+
+# Getting all false negatives for results?? Not sure why that is
+
+'''
+# Moving on to random forest
+
+from sklearn.ensemble import RandomForestClassifier
+
+rfc = RandomForestClassifier(n_estimators=300)
+# How do we determine what the best n_estimators value is?
+
+rfc.fit(dfXtrain,dfYtrain)
+"RFC Fitted."
+
+pred = rfc.predict(dfXtest)
+print(confusion_matrix(dfYtest,pred))
+print('\n')
+print(classification_report(dfYtest,pred))
+'''
+
+
+'''
+Defining results:
+
+[[TN FP
+  FN TP]]
+
+
+'''
+
+#def DecisionTree(auth_user, max_depth):
+
+# todo: get rid of all the subset nonsense
+# todo: make more object oriented
