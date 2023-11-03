@@ -37,13 +37,13 @@ def traintestsplit(user_data):
     y_testing_data = []  # array of y testing data for each user where index+1 is user id
 
     for df in user_data:  # processes each users data individually
-        X = df  #todo: should we drop 'User' column?
+        X = df
         y = df['User']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=101)
 
         X_training_data = pd.concat([X_training_data, X_train])
         y_training_data = pd.concat([y_training_data, y_train])
-        X_testing_data.append(X_test)
+        X_testing_data.append(X_test)  #todo: should we drop 'User' column?
         y_testing_data.append(y_test)
 
     # Output data to csv files
@@ -63,3 +63,4 @@ if __name__ == '__main__':
     users = range(1,16)
     processed_data = load_data(users)
     traintestsplit(processed_data)
+    # todo: how do we handle indexes?
