@@ -9,6 +9,13 @@ def process_user(user):
 
     df = pd.read_csv('raw-data/vol' + str(user) + '.csv')
 
+    # X, Y, TOUCH_MINOR, TRACKING_ID have some rows with values of -420 (im assuming an error of sorts)
+    # these values throw off feature calculation, so we will drop them (especially in user 4)
+    # :this barely helped user 4's issue
+    x_mask = df['X'] == -420
+    y_mask = df['Y'] == -420
+    df = df[~x_mask]
+    df = df[~y_mask]
 
     # DATA CLEANING
     # separate data by finger
@@ -52,15 +59,15 @@ def process_user(user):
     df['Ang_V'] = (df.Path_Tangent - df.Path_Tangent.shift(1)) / (df.Timestamp - df.Timestamp.shift(1))
 
     # TESTING FEATURES (not permanent changes)
-    df.drop(['Timestamp'], axis=1, inplace=True)
-    df.drop(['X'], axis=1, inplace=True)
-    df.drop(['Y'], axis=1, inplace=True)
-    df.drop(['TRACKING_ID'], axis=1, inplace=True)
-    df.drop(['FINGER'], axis=1, inplace=True)
-    df.drop(['BTN_TOUCH_HELD'], axis=1, inplace=True)
-    df.drop(['BTN_TOUCH_UP'], axis=1, inplace=True)
-    df.drop(['TOUCH_MAJOR'], axis=1, inplace=True)
-    df.drop(['TOUCH_MINOR'], axis=1, inplace=True)
+    # df.drop(['Timestamp'], axis=1, inplace=True)
+    # df.drop(['X'], axis=1, inplace=True)
+    # df.drop(['Y'], axis=1, inplace=True)
+    # df.drop(['TRACKING_ID'], axis=1, inplace=True)
+    # df.drop(['FINGER'], axis=1, inplace=True)
+    # df.drop(['BTN_TOUCH_HELD'], axis=1, inplace=True)
+    # df.drop(['BTN_TOUCH_UP'], axis=1, inplace=True)
+    # df.drop(['TOUCH_MAJOR'], axis=1, inplace=True)
+    # df.drop(['TOUCH_MINOR'], axis=1, inplace=True)
 
     # Drop missing or NaN values
     df.dropna(inplace=True)
