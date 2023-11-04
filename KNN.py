@@ -23,11 +23,11 @@ def knn_model(auth_user, k=4):
     pred = knn.predict(X_test.values)
 
     # EVALUATE METRICS
-    print(confusion_matrix(y_test, pred))
-    print(classification_report(y_test, pred))
+    # print(confusion_matrix(y_test, pred))
+    # print(classification_report(y_test, pred))
 
     # RETURNS FOR ELBOW METHOD
-    return pred, y_test
+    return pred, y_test.values.ravel()
 
 
 if __name__ == '__main__':
