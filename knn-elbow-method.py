@@ -34,7 +34,7 @@ def elbow_method(auth_user, test_range):
 
 if __name__ == '__main__':
 
-    testing_range = range(1, 11)
+    testing_range = range(1, 6)
 
     # Test for 1 user
     # authentic_user = 1

@@ -51,10 +51,22 @@ def process_user(user):
     df['Path_Tangent'] = np.arctan2((df.Y - df.Y.shift(1)), (df.X - df.X.shift(1)))
     df['Ang_V'] = (df.Path_Tangent - df.Path_Tangent.shift(1)) / (df.Timestamp - df.Timestamp.shift(1))
 
+    # TESTING FEATURES (not permanent changes)
+    df.drop(['Timestamp'], axis=1, inplace=True)
+    df.drop(['X'], axis=1, inplace=True)
+    df.drop(['Y'], axis=1, inplace=True)
+    df.drop(['TRACKING_ID'], axis=1, inplace=True)
+    df.drop(['FINGER'], axis=1, inplace=True)
+    df.drop(['BTN_TOUCH_HELD'], axis=1, inplace=True)
+    df.drop(['BTN_TOUCH_UP'], axis=1, inplace=True)
+    df.drop(['TOUCH_MAJOR'], axis=1, inplace=True)
+    df.drop(['TOUCH_MINOR'], axis=1, inplace=True)
+
     # Drop missing or NaN values
     df.dropna(inplace=True)
 
     # scaling
+    # todo: features we shouldn't scale? (finger, btn_touch, tracking_id)
     scaler = StandardScaler()
     scaler.fit(df)
     df = pd.DataFrame(scaler.transform(df),columns=df.keys())
