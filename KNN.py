@@ -4,6 +4,7 @@ import sklearn as sk
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+import os
 
 
 def knn_model(auth_user, k=4):
@@ -23,14 +24,32 @@ def knn_model(auth_user, k=4):
     pred = knn.predict(X_test.values)
 
     # EVALUATE METRICS
-    # print(confusion_matrix(y_test, pred))
-    # print(classification_report(y_test, pred))
+    conf_matrix = confusion_matrix(y_test, pred)
+    class_report = classification_report(y_test, pred)
+
+    # print to file
+    output_directory = os.path.join("model-outputs", "knn", 'kvalue' + str(k))
+    os.makedirs(output_directory, exist_ok=True)
+    with open('model-outputs/knn/kvalue' + str(k) + '/user' + str(auth_user) + '_confusion_matrix.txt', mode="w") as f:
+        f.write(str(conf_matrix))
+    with open('model-outputs/knn/kvalue' + str(k) + '/user' + str(auth_user) + '_classification_report.txt', mode="w") as f:
+        f.write(str(class_report))
+
+    # print to std
+    print(conf_matrix)
+    print(class_report)
+
 
     # RETURNS FOR ELBOW METHOD
     return pred, y_test.values.ravel()
 
 
 if __name__ == '__main__':
-    authentic_user = 1
-    k = 4
-    knn_model(authentic_user, k)
+    # authentic_user = 1
+    k = 2
+    # knn_model(authentic_user, k)
+
+    # multiple users
+    for authentic_user in range(1,16):
+        print(f'user {authentic_user} start')
+        knn_model(authentic_user, k)
