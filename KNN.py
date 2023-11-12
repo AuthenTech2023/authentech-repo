@@ -27,7 +27,7 @@ def knn_model(auth_user, k=4):
     conf_matrix = confusion_matrix(y_test, pred)
     class_report = classification_report(y_test, pred)
 
-    # print to file
+    # print to file (Necessary for confusion-matrix-display.py)
     output_directory = os.path.join("model-outputs", "knn", 'kvalue' + str(k))
     os.makedirs(output_directory, exist_ok=True)
     with open('model-outputs/knn/kvalue' + str(k) + '/user' + str(auth_user) + '_confusion_matrix.txt', mode="w") as f:
