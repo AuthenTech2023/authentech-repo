@@ -4,7 +4,7 @@ import numpy as np
 '''Takes in roc curve output from model scripts and generates display of roc matrix
 Model scripts must be updated to include code to output roc curve'''
 
-def roc_import(roc_path):
+def roc_import(roc_path):  # TODO: this is just the script from the confusion matrix display script, i was basing the form off of this but do as you see fit
     cm = [[0]*15]*15  # create 15x15 array filled with 0s
 
     for user in range(1,16):
