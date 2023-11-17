@@ -1,0 +1,1 @@
+(array([nan, nan]), array([0., 1.]), array([inf,  1.]))
