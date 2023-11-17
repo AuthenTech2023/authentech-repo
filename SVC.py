@@ -1,7 +1,7 @@
 # SVC Model
 
 import time
-import constants
+# import constants
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,8 +11,9 @@ import train_test_split
 
 from typing import Any
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve
 from sklearn.svm import SVC
+import os
 
 # Look into principal component analysis and grid search
 
@@ -39,12 +40,28 @@ def SVC_model(auth_user):
 
     X_test = X_test.drop(['Timestamp'], axis=1)
 
-    predictions = svc.predict(X_test)
+    pred = svc.predict(X_test)
 
-    return confusion_matrix(y_test, predictions)
+    # EVALUATE METRICS
+    conf_matrix = confusion_matrix(y_test, pred, labels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+    class_report = classification_report(y_test, pred)
+    roc = roc_curve(y_test, pred)
+
+    # print to file (Necessary for confusion-matrix-display.py)
+    output_directory = os.path.join("model-outputs", "svc")
+    os.makedirs(output_directory, exist_ok=True)
+    with open('model-outputs/svc/' + '/user' + str(auth_user) + '_confusion_matrix.txt', mode="w") as f:
+        f.write(str(conf_matrix))
+    with open('model-outputs/svc/' + '/user' + str(auth_user) + '_classification_report.txt',mode="w") as f:
+        f.write(str(class_report))
+    with open('model-outputs/svc/' + '/user' + str(auth_user) + '_roc_curve.txt',mode="w") as f:
+        f.write(str(roc))
+
+    return conf_matrix
 
     # Don't need
     # print(classification_report(y_test, predictions))
+
 
 if __name__ == "__main__":
     for i in range(1, 16):

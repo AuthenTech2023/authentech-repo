@@ -1,6 +1,6 @@
 # Random Forest Model
 import time
-import constants
+# import constants
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,8 +11,10 @@ import train_test_split
 from typing import Any
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve
 from sklearn.ensemble import RandomForestClassifier
+
+import os
 
 '''
 Defining results:
@@ -55,7 +57,23 @@ def random_forest_model(auth_user, max_depth=7, min_samples_leaf=3):
 
     pred = rfc.predict(X_test)
 
-    return confusion_matrix(y_test.values.ravel(), pred)
+    # EVALUATE METRICS
+    conf_matrix = confusion_matrix(y_test, pred, labels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+    class_report = classification_report(y_test, pred)
+    roc = roc_curve(y_test, pred)
+
+    # print to file (Necessary for confusion-matrix-display.py)
+    output_directory = os.path.join("model-outputs", "random-forest", 'max-depth-' + str(max_depth))
+    os.makedirs(output_directory, exist_ok=True)
+    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_confusion_matrix.txt', mode="w") as f:
+        f.write(str(conf_matrix))
+    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_classification_report.txt',
+              mode="w") as f:
+        f.write(str(class_report))
+    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_roc_curve.txt', mode="w") as f:
+        f.write(str(roc))
+
+    return conf_matrix
 
 
 if __name__ == '__main__':

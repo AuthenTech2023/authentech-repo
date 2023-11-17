@@ -34,4 +34,6 @@ def cm_display(path):
 
 if __name__ == '__main__':
     model_output_path = 'model-outputs/knn/kvalue2'
+    # model_output_path = 'model-outputs/random-forest/max-depth-7'
+    # model_output_path = 'model-outputs/svc'
     cm_display(model_output_path)
