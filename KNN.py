@@ -3,7 +3,7 @@ import pandas as pd
 import sklearn as sk
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report, confusion_matrix, roc_curve
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, roc_auc_score
 import os
 
 
@@ -27,6 +27,7 @@ def knn_model(auth_user, k=4):
     conf_matrix = confusion_matrix(y_test, pred, labels=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
     class_report = classification_report(y_test, pred)
     roc = roc_curve(y_test, pred)
+    # auc = roc_auc_score(y_test, pred)
 
     # print to file (Necessary for confusion-matrix-display.py)
     output_directory = os.path.join("model-outputs", "knn", 'kvalue' + str(k))
@@ -41,7 +42,8 @@ def knn_model(auth_user, k=4):
     # print to std
     print(conf_matrix)
     print(class_report)
-    print(roc)
+    print(f'roc: {roc}')
+    # print(f'auc: {auc}')
 
 
     # RETURNS FOR ELBOW METHOD

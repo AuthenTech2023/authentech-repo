@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 
 import train_test_split
 
@@ -49,6 +49,8 @@ print('\nModel fitted.\n')
 # todo: Add max_features parameter once you figure out how it works
 
 # todo: Also add max_features implementation
+
+
 def random_forest_model(auth_user, max_depth=7, min_samples_leaf=3):
     X_test = pd.read_csv('processed-feature-data/testing-data/X_testing_data_user' + str(auth_user) + '.csv')
     y_test = pd.read_csv('processed-feature-data/testing-data/y_testing_data_user' + str(auth_user) + '.csv')
@@ -60,7 +62,7 @@ def random_forest_model(auth_user, max_depth=7, min_samples_leaf=3):
     # EVALUATE METRICS
     conf_matrix = confusion_matrix(y_test, pred, labels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
     class_report = classification_report(y_test, pred)
-    roc = roc_curve(y_test, pred)
+    # roc = roc_curve(y_test, pred)
 
     # print to file (Necessary for confusion-matrix-display.py)
     output_directory = os.path.join("model-outputs", "random-forest", 'max-depth-' + str(max_depth))
@@ -70,8 +72,8 @@ def random_forest_model(auth_user, max_depth=7, min_samples_leaf=3):
     with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_classification_report.txt',
               mode="w") as f:
         f.write(str(class_report))
-    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_roc_curve.txt', mode="w") as f:
-        f.write(str(roc))
+    # with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_roc_curve.txt', mode="w") as f:
+    #     f.write(str(roc))
 
     return conf_matrix
 
@@ -90,4 +92,4 @@ if __name__ == '__main__':
         # i, max_depth=7, min_samples_leaf=3
         print(random_forest_model(i, max_depth=6))
 
-#todo: create a method for finding the max_depth, seemed that this was extremely helpful
+# todo: create a method for finding the max_depth, seemed that this was extremely helpful
