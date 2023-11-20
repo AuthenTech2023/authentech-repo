@@ -62,18 +62,17 @@ def random_forest_model(auth_user, max_depth=7, min_samples_leaf=3):
     # EVALUATE METRICS
     conf_matrix = confusion_matrix(y_test, pred, labels=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
     class_report = classification_report(y_test, pred)
-    # roc = roc_curve(y_test, pred)
+    pred = list(pred)
 
     # print to file (Necessary for confusion-matrix-display.py)
     output_directory = os.path.join("model-outputs", "random-forest", 'max-depth-' + str(max_depth))
     os.makedirs(output_directory, exist_ok=True)
     with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_confusion_matrix.txt', mode="w") as f:
         f.write(str(conf_matrix))
-    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_classification_report.txt',
-              mode="w") as f:
+    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_classification_report.txt',mode="w") as f:
         f.write(str(class_report))
-    # with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_roc_curve.txt', mode="w") as f:
-    #     f.write(str(roc))
+    with open('model-outputs/random-forest/max-depth-' + str(max_depth) + '/user' + str(auth_user) + '_pred.txt', mode="w") as f:
+        f.write(str(pred))
 
     return conf_matrix
 
