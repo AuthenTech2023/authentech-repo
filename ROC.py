@@ -1,42 +1,18 @@
-# File for generating ROC Curves
+# Code for displaying the ROC curve
 
-# Going to first just try for 1 user hard coded, then will expand
+'''
+Need a way to binarize the data and calculate the ROC curve for each user.
+Sklearn's built-in roc_curve method only works with data so we'll have to
+adapt to this.
+'''
 
-# What we need:
-#   - true positives
-#   - false negatives
-#   - true positive rate
-#   - true negative rate
+from sklearn.metrics import roc_curve, auc
+from sklearn.preprocessing import label_binarize
 
-# Once we have these four metrics, we can calculate the ROC curve
+roc = roc_curve(y_test, pred, labels)
 
-# imports
-from confusion_matrix_display import cm_build
-from sklearn import metrics
-import numpy as np
+# Pseudocode
+    # for i in range(1,16):
+        # i = 1 --> convert I values to binary true value
+        # sum array - i = 0 --> everything else is binary false value
 
-# Start with user 1:
-
-cm = cm_build('model-outputs/knn/kvalue2')
-print(str(cm) + '\n' + '--------------------------------------------------------------')
-
-# Print user 1's true postives
-tp = cm[0][0]
-print(tp)
-# Should be 16092
-
-# todo: change to be more modular
-column_total = sum(row[0] for row in cm)
-print(column_total)
-# should be 21195
-fp = column_total - tp
-print(fp)
-# Should be 5103
-
-tpr = tp / (tp+fp)
-fpr = fp / (tp+fp)
-
-print(tpr)
-print(fpr)
-
-roc_auc = metrics.auc(fpr,tpr)
