@@ -34,7 +34,7 @@ def knn_model(auth_user, k=4):
         f.write(str(conf_matrix))
     with open('model-outputs/knn/kvalue' + str(k) + '/user' + str(auth_user) + '_classification_report.txt', mode="w") as f:
         f.write(str(class_report))
-    with open('model-outputs/knn/kvalue' + str(k) + '/user' + str(auth_user) + 'pred.txt', mode="w") as f:
+    with open('model-outputs/knn/kvalue' + str(k) + '/user' + str(auth_user) + '_pred.txt', mode="w") as f:
         f.write(str(pred))
 
     # print to std
@@ -47,12 +47,12 @@ def knn_model(auth_user, k=4):
 
 
 if __name__ == '__main__':
-    authentic_user = 1
+    # authentic_user = 1
     k = 2
-    knn_model(authentic_user, k)
+    # knn_model(authentic_user, k)
 
-    # # multiple users
-    # for authentic_user in range(1,16):
-    #     print(f'user {authentic_user} start')
-    #     knn_model(authentic_user, k)
+    # multiple users
+    for authentic_user in range(1,16):
+        print(f'user {authentic_user} start')
+        knn_model(authentic_user, k)
 

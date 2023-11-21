@@ -28,6 +28,7 @@ X_train = pd.read_csv('processed-feature-data/training-data/X_training_data.csv'
 y_train = pd.read_csv('processed-feature-data/training-data/y_training_data.csv')
 X_train = X_train.drop(['Timestamp'], axis=1)
 svc = SVC()
+print('Model fitting')
 svc.fit(X_train, y_train.values.ravel())
 print('Model fit')
 
