@@ -115,11 +115,11 @@ if __name__ == '__main__':
     # model_name = 'k-NN'
 
     # RF
-    # model_output_path = 'model-outputs/random-forest/max-depth-6'
-    # model_name = 'Random Forest'
+    model_output_path = 'model-outputs/random-forest/max-depth-6'
+    model_name = 'Random Forest'
 
     # SVC
-    model_output_path = 'model-outputs/svc'
-    model_name = 'SVC'
+    # model_output_path = 'model-outputs/svc'
+    # model_name = 'SVC'
 
     roc_display(model_output_path, model_name)

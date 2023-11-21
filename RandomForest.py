@@ -28,21 +28,21 @@ Defining results:
 X_train = pd.read_csv('processed-feature-data/training-data/X_training_data.csv')
 y_train = pd.read_csv('processed-feature-data/training-data/y_training_data.csv')
 
-param_grid = {'max_depth':[7, 9, 11, 13], 'max_features':['sqrt','log2'],
-              'min_samples_leaf':[2,3,4,5], 'min_samples_split':[7,8,9,10]}
-print('param grid set.')
-
-grid = GridSearchCV(RandomForestClassifier(), param_grid, verbose=2)
-print('Fitting...')
-grid.fit(X_train,y_train.values.ravel())
-print("Done.")
-print('Grid search complete')
+# param_grid = {'max_depth':[7, 9, 11, 13], 'max_features':['sqrt','log2'],
+#               'min_samples_leaf':[2,3,4,5], 'min_samples_split':[7,8,9,10]}
+# print('param grid set.')
+#
+# grid = GridSearchCV(RandomForestClassifier(), param_grid, verbose=2)
+# print('Fitting...')
+# grid.fit(X_train,y_train.values.ravel())
+# print("Done.")
+# print('Grid search complete')
 
 # Found dropping these metrics to be beneficial
 X_train = X_train.drop(['Timestamp'], axis=1)
 
 rfc = RandomForestClassifier(n_estimators=300, max_depth=7, min_samples_leaf=3)
-
+print('fitting model')
 rfc.fit(X_train, y_train.values.ravel())
 print('\nModel fitted.\n')
 
